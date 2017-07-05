@@ -1,16 +1,28 @@
 const pug = require('pug')
 
 module.exports = function (app, passport) {
+    var message = {
+        userName:String,
+        ownerName:String,
+        postId:Number,
+    }
 
+    //index
     app.get('/', (req, res) => {
         var user
         if(req.isAuthenticated()){
             user = req.user
+            message.userName = user.userName
         }else{
             user = null
         }
-        res.render('../views/index.pug',{user:user})
+        res.render('../views/index.pug',{user:user,message:message})
     })
+    //post page
+    app.get('/post',(req,res)=>{
+        
+    })
+
     //local authentication
     app.get('/auth/login', (req, res) => {
         res.render('../views/login.pug',{message:req.flash('loginMessage')})

@@ -9,8 +9,8 @@ if (!Auth) {
 }
 
 //save user entity
-function storeUser(user = new User(),email, pwd, callback) {
-    user.local.email = email
+function storeUser(user = new User(),userName, pwd, callback) {
+    user.local.userName = userName
     user.local.privilege = 0
     user.generateHash(pwd, res => {
         user.local.pwd = res
@@ -63,22 +63,19 @@ module.exports = function (passport) {
 
     //signup strategy
     passport.use('local-signup', new LocalStrategy({
-        usernameField: 'email',
+        usernameField: 'userName',
         passwordField: 'pwd',
         passReqToCallback: true
-    }, (req, email, pwd, done) => {
-        if (email) {
-            email = email.toLowerCase()
-        }
+    }, (req, userName, pwd, done) => {
         process.nextTick(function () {
-            User.findOne({ 'local.email': email }, (err, user) => {
+            User.findOne({ 'local.userName': userName }, (err, user) => {
                 if (err) {
                     return done(err)
                 }
                 if (user) {
-                    return done(null, false, req.flash('signupMessage', 'That email was already registered'))
+                    return done(null, false, req.flash('signupMessage', 'That user name was already registered'))
                 } else {
-                    storeUser(undefined, email, pwd, (err, User) => {
+                    storeUser(undefined, userName, pwd, (err, User) => {
                         return done(err, User)
                     })
                 }
@@ -88,11 +85,11 @@ module.exports = function (passport) {
 
     //login strategy
     passport.use('local-login', new LocalStrategy({
-        usernameField: 'email',
+        usernameField: 'userName',
         passwordField: 'pwd',
         passReqToCallback: true
-    }, (req, email, pwd, done) => {
-        User.findOne({ 'local.email': email }, (err, user) => {
+    }, (req, userName, pwd, done) => {
+        User.findOne({ 'local.userName': userName }, (err, user) => {
             if (err) {
                 return done(err)
             }

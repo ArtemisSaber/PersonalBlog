@@ -1,3 +1,5 @@
+extends ../layout
+
 block content
     div(class="row")
         div(class="col-sm-6 col-sm-offset-3")
@@ -8,8 +10,8 @@ block content
                 
             form(action="/login" method="post")
                 div(class="form-group")
-                    label EMail
-                    input(type="email" class="form-control" name="email")
+                    label UserName
+                    input(type="text" class="form-control" name="userName")
                 div(class="form-group")
                     label Password
                     input(type="password" class="form-control" name="pwd")

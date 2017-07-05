@@ -1,0 +1,26 @@
+{
+  "name": "personalblog",
+  "version": "0.0.1",
+  "description": "PersonalBlog",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "personalblog"
+  },
+  "author": "Howard",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "connect-flash": "^0.1.1",
+    "express": "^4.15.3",
+    "markdown": "^0.5.0",
+    "passport": "^0.3.2",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth": "^1.0.0",
+    "passport-local": "^1.0.0",
+    "pug": "^2.0.0-rc.2"
+  }
+}

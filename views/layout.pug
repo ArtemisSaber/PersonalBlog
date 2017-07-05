@@ -1,0 +1,39 @@
+head
+    title Semimajor Axis Blog
+    block ref
+        link(rel="stylesheet" href='//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css')
+        link(rel="stylesheet" href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
+        link(rel="stylesheet" href="css/nav.css")
+        meta(charset="utf-8")
+    block nav
+        div.container
+            div.row
+                div.col-sm-3.col-md-2.col-xs-6
+                    div.sidebar-nav
+                        nav.navbar.navbar-toggleable-md.navbar-light.bg-faded
+                            button.navbar-toggler.navbar-toggler-right(type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation")
+                                span.navbar-toggler-icon
+                            a.navbar-brand(href="/") SemimajorAxis
+                            div.collapse.navbar-collapse(id="navbar")
+                                ul.navbar-nav.mr-auto
+                                    li.nav-item
+                                        a.nav-link(href="/auth/login") Login
+                                    li.nav-item
+                                        a.nav-link(href="/") Home
+                                    if(user.local.privilege === 0)
+                                        - var postId = message.PostId 
+                                        - var userName = message.userName 
+                                        li.nav-item
+                                            a.nav-link(href="/editor/new") Post new blog
+                                        if(user.local.userName === message.ownerName)
+                                            li.nav-item
+                                                a.nav-link(href="/editor/"+ postId) Edit this blog
+                                        li.nav-item
+                                            a.nav-link(href="/profile") #{userName}
+                                        li.nav-item
+                                            a.nav-link(href="/auth/logout") Logout
+                
+                block content
+                block footer
+
+                                    

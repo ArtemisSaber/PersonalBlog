@@ -56,8 +56,8 @@ head
                         - var userName = user.local.userName
                         li
                             a(href="/editor/new") Post new blog
-                        if(message.ownerName)
-                            if(user.local.userName === message.ownerName)
+                        if(message.authorName)
+                            if(user.local.userName === message.authorName)
                                 li
                                     a(href="/editor/"+ postId) Edit this blog
                         li.dropdown

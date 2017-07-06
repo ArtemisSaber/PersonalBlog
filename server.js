@@ -1,6 +1,6 @@
 var express = require('express')
 var app = express()
-var port = process.env.PORT || 80
+var port = process.env.PORT || 8082
 var mongoose = require('mongoose')
 var passport = require('passport')
 var flash = require('connect-flash')
@@ -44,6 +44,8 @@ app.use('/scripts', express.static(path.join(__dirname, 'public', 'scripts')))
 app.use('/images', express.static(path.join(__dirname, 'public', 'image')))
 
 require('./routers/routes')(app, passport)
+require('./routers/editor')(app)
+require('./routers/content')(app)
 
 fs.readdir('./public/less', (err, files) => {
     if (err) {

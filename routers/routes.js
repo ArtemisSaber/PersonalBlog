@@ -1,58 +1,58 @@
 const pug = require('pug')
+const User = require('../auth/models/user')
 
 module.exports = function (app, passport) {
     var message = {
-        userName:String,
-        ownerName:String,
-        postId:Number,
+        userName: String,
+        authorrName: String,
+        postId: Number,
     }
 
     //index
     app.get('/', (req, res) => {
         var user
-        if(req.isAuthenticated()){
+        if (req.isAuthenticated()) {
             user = req.user
             message.userName = user.userName
-        }else{
+        } else {
             user = null
         }
-        res.render('../views/index.pug',{user:user,message:message})
+        User.find({ 'local.privilege': 0 }, (err, userArray) => {
+            if (err) {
+                throw err
+            }
+            res.render('../views/index.pug', { user: user, message: message, userArray: userArray })
+        })
+
     })
     //post page
-    app.get('/post',(req,res)=>{
-        
-    })
-    //editor page
-    //new post
-    app.get('/editor/new',isLoggedIn,(req,res)=>{
-        var user = req.user
-        message.userName = req.userName
-        res.render('../views/editor.pug',{user:user,message:message})
+    app.get('/post', (req, res) => {
+
     })
 
     //local authentication
     app.get('/auth/login', (req, res) => {
-        res.render('../views/auth/login.pug',{message:req.flash('loginMessage')})
+        res.render('../views/auth/login.pug', { message: req.flash('loginMessage') })
     })
 
-    app.post('/auth/login',passport.authenticate('local-login',{
-        successRedirect:'/',
-        failureRedirect:'/auth/login',
-        failureFlash:true
+    app.post('/auth/login', passport.authenticate('local-login', {
+        successRedirect: '/',
+        failureRedirect: '/auth/login',
+        failureFlash: true
     }))
-    
+
     //google authorization
-    app.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}))
-    app.get('/auth/google/callback',passport.authenticate('google',{
-        successRedirect:'/',
-        failureRedirect:'/'
+    app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }))
+    app.get('/auth/google/callback', passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/'
     }))
 
     //github authorization
-    app.get('/auth/github',passport.authenticate('github',{scope:'email'}))
-    app.get('/auth/github/callback',passport.authenticate('github',{
-        successRedirect:'/',
-        failureRedirect:'/'
+    app.get('/auth/github', passport.authenticate('github', { scope: 'email' }))
+    app.get('/auth/github/callback', passport.authenticate('github', {
+        successRedirect: '/',
+        failureRedirect: '/'
     }))
 
     //local signup
@@ -68,31 +68,31 @@ module.exports = function (app, passport) {
 
     //account link
     //local account
-    app.get('/connect/local',(req,res)=>{
-        res.render('../views/auth/connect_local.pug',{message:req.flash('loginMessage')})
+    app.get('/connect/local', (req, res) => {
+        res.render('../views/auth/connect_local.pug', { message: req.flash('loginMessage') })
     })
-    app.post('/connect/local',passport.authenticate('local-signup',{
-        successRedirect:'/',
-        failureRedirect:'/connect/local',
-        failureFlash:true
+    app.post('/connect/local', passport.authenticate('local-signup', {
+        successRedirect: '/',
+        failureRedirect: '/connect/local',
+        failureFlash: true
     }))
     //facebook
-    app.get('/connect/facebook',passport.authorize('facebook',{scope:'email'}))
-    app.get('/connect/facebook/callback',passport.authorize('facebook',{
-        successRedirect:'/',
-        failureRedirect:'/'
+    app.get('/connect/facebook', passport.authorize('facebook', { scope: 'email' }))
+    app.get('/connect/facebook/callback', passport.authorize('facebook', {
+        successRedirect: '/',
+        failureRedirect: '/'
     }))
     //google
-    app.get('/connect/google',passport.authorize('google',{scope:['profile','email']}))
-    app.get('/connect/google/callback',passport.authorize('google',{
-        successRedirect:'/',
-        failureRedirect:'/'
+    app.get('/connect/google', passport.authorize('google', { scope: ['profile', 'email'] }))
+    app.get('/connect/google/callback', passport.authorize('google', {
+        successRedirect: '/',
+        failureRedirect: '/'
     }))
     //github
-    app.get('/connect/github',passport.authorize('github',{scope:'email'}))
-    app.get('/connect/github/callback',passport.authorize('github',{
-        successRedirect:'/',
-        failureRedirect:'/'
+    app.get('/connect/github', passport.authorize('github', { scope: 'email' }))
+    app.get('/connect/github/callback', passport.authorize('github', {
+        successRedirect: '/',
+        failureRedirect: '/'
     }))
 
 

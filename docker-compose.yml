@@ -25,7 +25,7 @@ services:
  
   mongodb:
     image: mongo
-    container_name: mongodb
+    container_name: howard_blog_mongodb
     environment: 
       - MONGO_DATA_DIR=/data/db
       - MONGO_LOG_DIR=/dev/null

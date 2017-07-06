@@ -4,6 +4,10 @@ var port = process.env.PORT || 80
 var mongoose = require('mongoose')
 var passport = require('passport')
 var flash = require('connect-flash')
+var fs = require('fs')
+var path = require('path')
+var winston = require('winston')
+var less = require('less')
 
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -13,30 +17,55 @@ var session = require('express-session')
 var db = require('./config/db')
 
 mongoose.connect(db.url);
-require('./config/auth')(passport)
+require('./auth/config/auth')(passport)
 
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({
-    extended:true
+    extended: true
 }))
 app.use(bodyParser.json())
 // app.use(bodyParser())
 
-app.set('view engine','pug')
+app.set('view engine', 'pug')
 
 app.use(session(
     {
-        secret:'EnTaroTassadar',
-        resave:true,
-        saveUninitialized:true
+        secret: 'EnTaroTassadar',
+        resave: true,
+        saveUninitialized: true
     }
-    ))
+))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(flash())
 
-require('./app/router')(app,passport)
+app.use('/css', express.static(path.join(__dirname, 'public', 'css')))
+app.use('/scripts', express.static(path.join(__dirname, 'public', 'scripts')))
+app.use('/images', express.static(path.join(__dirname, 'public', 'image')))
+
+require('./routers/routes')(app, passport)
+
+fs.readdir('./public/less', (err, files) => {
+    if (err) {
+        console.log(err)
+    }
+    files.forEach((file, index) => {
+        var curfile = path.join('./public/less', file)
+        fs.readFile(curfile, 'utf-8',(err, data) => {
+            less.render(data,(err,cssdata)=>{
+                var targetPath = path.join('./public/css',file.split('.')[0]+".css")
+                fs.writeFile(targetPath,cssdata.css,err=>{
+                    if(err){
+                        console.log(err)
+                    }
+                })
+            })
+        })
+    })
+})
 
 app.listen(port)
 
-console.log('Listening at port '+ port)
+
+var now = new Date()
+winston.log('start-up', now.toString() + ": Listening at" + port)

@@ -1,3 +1,4 @@
+extends ../layout
 
 block content
     div(class="col-sm-6 col-sm-offset-3")
@@ -5,7 +6,7 @@ block content
             span(class="fa fa-sign-in") Signup
             - if(message.length >0)
                 div(class="alert alert-danger") #{message}
-        form(action="/signup" method="post")
+        form(action="/auth/signup" method="post")
             div(class="form-group")
                 label UserName
                 input(type="text" class="form-control" name="userName")

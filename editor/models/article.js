@@ -3,7 +3,7 @@ var comment = require('../../comments/models/comment')
 var articleSchema = mongoose.Schema({    
     header:{
         articleId:String,
-        ownerId:String,
+        ownerName:String,
         category:String,
         createTime:Date
     },

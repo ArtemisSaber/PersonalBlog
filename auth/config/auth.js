@@ -4,9 +4,11 @@ var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 var GithubStrategy = require('passport-github').Strategy
 var User = require('../models/user')
 var Auth = require('./authinfo')
+var winston = require('winston')
 if (!Auth) {
     Auth = require('./user')
 }
+winston.add(winston.transports.File,{filename:'../../logs/site.log'})
 
 //save user entity
 function storeUser(user = new User(),userName, pwd, callback) {
@@ -18,6 +20,8 @@ function storeUser(user = new User(),userName, pwd, callback) {
             if (err) {
                 throw err
             }
+            var now = Date()
+            winston.log('register',now.toString()+': registered'+userName)
             callback(err, user)
         })
     })

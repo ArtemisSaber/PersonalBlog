@@ -19,3 +19,17 @@ hr {
     color: #233;
     padding:20px;
 }
+.comment{
+    background: #EEE;
+    border: 1px solid #233;
+    border-radius: 5px;
+    margin-top: 2px;
+    margin-bottom: 5px;
+}
+.commentSection{
+    border: 1px solid #233;
+    border-radius: 3px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 10px;
+}

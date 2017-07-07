@@ -12,7 +12,7 @@ services:
     command: mongod --smallfiles --logpath=/dev/null --quiet
   blog:
     depends_on:
-      - howard_blog_mongodb
+      - mongodb
     build: .
     container_name: blog
     image: howard/blog:latest

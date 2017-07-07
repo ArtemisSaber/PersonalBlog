@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    div.col-md-12.col-xs-12
+    div.col-md-12.col-xs-12.contents
     if(article)
         - var id = article.header.articleId
         form(action="/editor/"+id method="post")

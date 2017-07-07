@@ -47,3 +47,5 @@ services:
       - VIRTUAL_HOST=www.semimajoraxis.com
       - LETSENCRYPT_HOST=www.semimajoraxis.com
       - LETSENCRYPT_EMAIL=chenhao.w@gmail.com
+      - DB=howard_blog_mongodb
+      - PORT=80

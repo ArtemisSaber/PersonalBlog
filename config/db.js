@@ -1,3 +1,4 @@
+var url = process.env.DB || 'localhost'
 module.exports = {
-    url:'mongodb://localhost/blog'
+    url:'mongodb://'+url+'/blog'
 }

@@ -39,34 +39,37 @@ module.exports = function (app) {
                 } else {
                     message.userName = null
                 }
-                res.render('../views/content.pug', { user: user, message: message, html: html })
+                message.postId = id
+                res.render('../views/content.pug', { user: user, message: message, html: html,isContentPage:true })
             } else {
                 res.render('../views/404.pug')
             }
         })
     })
-    app.get('/usr/:userName',(req,res)=>{
-        var userName = req.params.userName
-        User.findOne({'local.userName':userName},(err,user)=>{
+    app.get('/usr/:uId',(req,res)=>{
+        var uId = req.params.uId
+        User.findOne({'_id':uId},(err,user)=>{
             if(err){
                 throw err
             }
             if(user){
                 var curuser = null
-                Article.find({'header.authorName':userName},(err,articles)=>{
+                Article.find({'header.authorName':user.local.userName},(err,articles)=>{
                     if(err){
                         throw err
                     }
                     if(articles){
-                        var idArray = []
+                        message.authorName = user.local.userName
+                        var articleArray = []
                         articles.forEach((article)=>{
-                            idArray.push(article.header.articleId)
+                            articleArray.push({'title':article.body.title,'id':article.header.articleId})
                         })
                         if(req.isAuthenticated()){
                             curuser = req.user
+                            curuser._id = curuser._id.valueOf()
                             message.userName = curuser.local.userName
                         }
-                        res.render('../views/userArticles.pug',{user:curuser,message:message,articles:articles})
+                        res.render('../views/userArticles.pug',{user:curuser,message:message,articles:articleArray})
                     }
                 })
             }else{

@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var bcrypt = require('bcrypt-nodejs')
+var autoincrement = require('mongoose-auto-increment')
 
 var userSchema = mongoose.Schema({
     local: {

@@ -1,0 +1,9 @@
+extends layout
+block content
+        div.text-center.col-md-12.col-xs-12
+        h1.page-header #{message.authorName}
+        ul.articleArrays
+        - if(articles)
+            each article in articles
+                li.articles.text-left
+                    a(href='/content/'+article.id) #{article.title}

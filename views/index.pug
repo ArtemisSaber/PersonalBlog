@@ -6,7 +6,7 @@ block content
         - if(userArray)
             each user in userArray
                 li.users.text-left
-                    a(href='/contents/usr/'+user.local.userName) #{user.local.userName}
+                    a(href='/usr/'+user._id) #{user.local.userName}
             
                 
             

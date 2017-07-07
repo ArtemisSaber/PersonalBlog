@@ -15,8 +15,12 @@ var cookieParser = require('cookie-parser')
 var session = require('express-session')
 
 var db = require('./config/db')
+var autoincrement = require('mongoose-auto-increment')
 
 mongoose.connect(db.url);
+
+autoincrement.initialize(mongoose.connection)
+
 require('./auth/config/auth')(passport)
 
 app.use(cookieParser())

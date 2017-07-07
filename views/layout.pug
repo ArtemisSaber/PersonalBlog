@@ -47,9 +47,10 @@ head
             nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation" id="sidebar-wrapper")
                 ul.nav.sidebar-nav
                     li.sidebar-brand
-                        a(href="/") Semimajor Axis 
-                    li
-                        a(href="/auth/login") Login
+                        a(href="/") Semimajor Axis
+                    unless(user) 
+                        li
+                            a(href="/auth/login") Login
                     li
                         a(href="/") Home
                     if(user)
@@ -57,9 +58,9 @@ head
                         li
                             a(href="/editor/new") Post new blog
                         if(message.authorName)
-                            if(user.local.userName === message.authorName)
+                            if(user.local.userName === message.authorName && isContentPage)
                                 li
-                                    a(href="/editor/"+ postId) Edit this blog
+                                    a(href="/editor/"+ message.postId) Edit this blog
                         li.dropdown
                             a.dropdown-toggle(href="#" data-toggle="dropdown") 
                                 i.fa.fa-fw.fa-user

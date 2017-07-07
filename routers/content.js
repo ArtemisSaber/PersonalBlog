@@ -58,7 +58,7 @@ module.exports = function (app) {
                     if(err){
                         throw err
                     }
-                    if(articles){
+                    if(articles.length>0){
                         message.authorName = user.local.userName
                         var articleArray = []
                         articles.forEach((article)=>{

@@ -3,12 +3,12 @@ const Article = require('../editor/models/article')
 function storeArticle(article = new Article(), user, title, content, callback) {
     var now = new Date()
     var createTime = now.toUTCString()
-    article.header.createTime = createTime   
-    var authorName =user.local.userName
+    article.header.createTime = createTime
+    var authorName = user.local.userName
     article.header.authorName = authorName
     article.body.title = title
     article.body.content = content
-    article.generateHash(authorName,title, content, res => {
+    article.generateHash(authorName, title, content, res => {
         article.header.articleId = res
         article.save(err => {
             if (err) {
@@ -23,7 +23,7 @@ var isLoggedIn = function (req, res, next) {
         return next()
     }
     res.redirect('/auth/login')
-} 
+}
 
 var message = {
     userName: String,
@@ -58,10 +58,14 @@ module.exports = function (app) {
             if (err) {
                 throw err
             }
-            if (user.local.userName === article.header.authorName) {
-                message.authorName = article.header.authorName
-                message.postId = article.header.articleId
-                res.render('../views/editor.pug', { user: user, message: message, article: article })
+            if (article) {
+                if (user.local.userName === article.header.authorName) {
+                    message.authorName = article.header.authorName
+                    message.postId = article.header.articleId
+                    res.render('../views/editor.pug', { user: user, message: message, article: article })
+                }
+            }else{
+                res.render('../views/404.pug')
             }
         })
     })
@@ -75,13 +79,16 @@ module.exports = function (app) {
             if (err) {
                 throw err
             }
-            if (user.local.userName === article.header.authorName) {
-                storeArticle(article, user, title, content, article => {
-                    var id = article.header.articleId
-                    res.redirect('/content/' + id)
-                })
-
-            }else{
+            if (article) {
+                if (user.local.userName === article.header.authorName) {
+                    storeArticle(article, user, title, content, article => {
+                        var id = article.header.articleId
+                        res.redirect('/content/' + id)
+                    })
+                } else {
+                    res.redirect('/')
+                }
+            } else {
                 res.redirect('/')
             }
         })

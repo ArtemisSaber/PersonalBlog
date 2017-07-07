@@ -1,6 +1,28 @@
 version: "2"
 
 services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/etc/nginx/vhost.d'
+      - '/usr/share/nginx/html'
+      - '/path/to/certs:/etc/nginx/certs:ro' 
+      - '/var/run/docker.sock:/tmp/docker.sock:ro'
+    labels:
+      - "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true"
+  lets_encrypt_nginx_companion:
+    container_name: letsencrypt-nginx-proxy
+    image: 'jrcs/letsencrypt-nginx-proxy-companion'
+    volumes:
+      - '/path/to/certs:/etc/nginx/certs:rw'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    volumes_from:
+      - nginx-proxy
+
   mongodb:
     image: mongo
     container_name: howard_blog_mongodb
@@ -13,6 +35,8 @@ services:
   blog:
     depends_on:
       - mongodb
+      - nginx-proxy
+      - lets_encrypt_nginx_companion
     build: .
     container_name: blog
     image: howard/blog:latest

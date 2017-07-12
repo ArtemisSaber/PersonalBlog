@@ -7,20 +7,20 @@ var message = {
     authorName: String,
     postId: Number,
 }
-function storeComment(article,comment,callback){
-    if(!article){
+function storeComment(article, comment, callback) {
+    if (!article) {
         throw new ExceptionInformation('No article defined')
     }
     var now = new Date()
     var createTime = now.toUTCString()
     var addModel = {
         time: createTime,
-        author:'Anonmynous',
+        author: 'Anonmynous',
         content: comment
     }
     article.comments.push(addModel)
-    article.save(err=>{
-        if(err){
+    article.save(err => {
+        if (err) {
             throw err
         }
         callback(article)
@@ -66,7 +66,7 @@ module.exports = function (app) {
                     })
                 }
                 message.postId = id
-                res.render('../views/content.pug', { user: user, message: message, html: html, isContentPage: true, comments: comments})
+                res.render('../views/content.pug', { user: user, message: message, html: html, isContentPage: true, comments: comments })
             } else {
                 res.render('../views/404.pug')
             }
@@ -96,6 +96,16 @@ module.exports = function (app) {
                             message.userName = curuser.local.userName
                         }
                         res.render('../views/userArticles.pug', { user: curuser, message: message, articles: articleArray })
+                    } else {
+                        message.authorName = user.local.userName
+                        var articleArray = []
+                        if (req.isAuthenticated()) {
+                            curuser = req.user
+                            curuser._id = curuser._id.valueOf()
+                            message.userName = curuser.local.userName
+                        }
+                        res.render('../views/userArticles.pug', { user: curuser, message: message, articles: articleArray })
+
                     }
                 })
             } else {
@@ -104,19 +114,19 @@ module.exports = function (app) {
         })
     })
     //comment posting
-    app.post('/comment/:id',(req,res)=>{
+    app.post('/comment/:id', (req, res) => {
         var articleId = req.params.id
         var comment = req.body.comment
-        if(comment){
-            Article.findOne({'header.articleId':articleId},(err,article)=>{
-                if(err){
+        if (comment) {
+            Article.findOne({ 'header.articleId': articleId }, (err, article) => {
+                if (err) {
                     throw err
                 }
-                if(article){
-                    storeComment(article,comment,(article)=>{
-                        res.redirect('/content/'+articleId)
+                if (article) {
+                    storeComment(article, comment, (article) => {
+                        res.redirect('/content/' + articleId)
                     })
-                }else{
+                } else {
                     res.render('../views/404.pug')
                 }
             })

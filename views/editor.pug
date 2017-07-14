@@ -2,25 +2,43 @@ extends layout
 
 block content
     div.col-md-12.col-xs-12
-    if(article)
-        - var id = article.header.articleId
-        form(action="/editor/"+id method="post")
-            div.form-group.col-md-12.col-xs-12
-                    - var title=article.body.title
-                    - var content = article.body.content
-                    input.col-md-12.col-xs-12.form-control(type="text" name="title" value= title required)
-                    textarea.col-md-12.com-xs-12.form-control(name="content" style="width:100%;height:55%" required) #{content}
+        if(article)
+            - var id = article.header.articleId
+                form(action="/editor/"+id method="post").col-md-8.col-xs-8
+                    div.form-group.col-md-12.col-xs-12
+                        - var title=article.body.title
+                        - var content = article.body.content
+                        input.col-md-12.col-xs-12.form-control(type="text" name="title" value= title required)#title
+                        textarea.col-md-12.com-xs-12.form-control(name="content" style="width:100%;height:55%" required) #{content}
 
-            div.form-group.col-md-12.col-xs-12
-                button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Edited by #{user.local.userName}
-    else
-        form(action="/editor/new" method="post")
-            div.form-group.col-md-12.col-xs-12
-                input.col-md-12.col-xs-12.form-control(type="text" name="title" placeholder="Title:" required)
-                textarea.col-md-12.com-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
+                    div.form-group.col-md-12.col-xs-12
+                        button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Edited by #{user.local.userName}
+        else
+                form(action="/editor/new" method="post").col-md-8.col-xs-8
+                    div.form-group.col-md-12.col-xs-12
+                        input.col-md-12.col-xs-12.form-control(type="text" name="title" placeholder="Title:" required)#title
+                        textarea.col-md-12.com-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
 
-            div.form-group.col-md-12.col-xs-12
-                button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Authored by #{user.local.userName}
-
+                    div.form-group.col-md-12.col-xs-12
+                        button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Authored by #{user.local.userName}
+        div.col-md-4.col-xs-4#Preview
+        
+    script(src="/scripts/marked.js")
+    
+    script.
+        function preview(){
+            document.getElementById('Preview').innerHTML = marked($('textarea').val())
+        }
+        function setHeight(){
+            $('#Preview').css('height',window.innerHeight*0.65)
+        }
+        $(document).ready(()=>{
+            setHeight()
+            preview()
+        })
+        $('textarea').on('input',(e)=>{
+            preview()
+        })
+        
             
 

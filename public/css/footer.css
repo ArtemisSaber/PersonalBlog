@@ -1,9 +1,10 @@
 footer{
   background-color: #EEE;
   position: absolute !important;
-  right: 0;
+  width: 100%;
   bottom: 0;
   left: 0;
+  height: 140px;
   padding: 1rem;
   text-align: center;
 }
@@ -12,6 +13,9 @@ footer p{
 }
 hr {
   border-color: #333
+}
+h1{
+  text-align: center
 }
 .contents{
     background-color: #FFF;
@@ -32,4 +36,8 @@ hr {
     margin-top: 5px;
     margin-bottom: 5px;
     padding: 10px;
+}
+#Preview{
+  height: 600px;
+  overflow: scroll;
 }

@@ -1,4 +1,5 @@
 const markdown = require('markdown').markdown
+const marked = require('marked')
 const Article = require('../editor/models/article')
 const User = require('../auth/models/user')
 
@@ -7,6 +8,16 @@ var message = {
     authorName: String,
     postId: Number,
 }
+marked.setOptions({
+    renderer: new marked.Renderer(),
+    gfm: true,
+    tables: true,
+    breaks: false,
+    pedantic: false,
+    sanitize: false,
+    smartLists: true,
+    smartypants: false
+})
 function storeComment(article, comment, callback) {
     if (!article) {
         throw new ExceptionInformation('No article defined')
@@ -46,7 +57,7 @@ module.exports = function (app) {
             if (article) {
                 var title = article.body.title
                 var content = article.body.content
-                var parsedContent = markdown.toHTML(content)
+                var parsedContent = marked(content)
                 message.postId = id
                 message.authorName = article.header.authorName
                 var html = {

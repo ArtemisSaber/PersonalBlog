@@ -1,4 +1,4 @@
-const markdown = require('markdown').markdown
+
 const marked = require('marked')
 const Article = require('../editor/models/article')
 const User = require('../auth/models/user')

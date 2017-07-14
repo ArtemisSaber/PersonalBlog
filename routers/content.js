@@ -83,6 +83,40 @@ module.exports = function (app) {
             }
         })
     })
+    app.delete('/content/:id',isLoggedIn,(req,res)=>{
+        var id = req.params.id
+        Article.findOne({'header.articleId':id},(err,article)=>{
+            if(err){
+                throw err
+            }
+            if(article){
+                authorName = article.header.authorName
+                if(req.isAuthenticated()){
+                    userName = req.user.local.userName
+                    if(userName === authorName){
+                        Article.deleteOne({'header.articleId':id},(err,result)=>{
+                            if(err){
+                                res.writeHead(500)
+                                res.end()
+                                throw err
+                            }
+                            res.writeHead(200)
+                            res.end()
+                        })
+                    }else{
+                        res.writeHead(403)
+                        res.end()
+                    }
+                }else{
+                    res.writeHead(403)
+                    res.end()
+                }
+            }else{
+                res.writeHead(404)
+                res.end()
+            }
+        })
+    })
     app.get('/usr/:uId', (req, res) => {
         var uId = req.params.uId
         User.findOne({ '_id': uId }, (err, user) => {

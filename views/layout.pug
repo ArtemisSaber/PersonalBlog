@@ -62,6 +62,35 @@ body
                             if(user.local.userName === message.authorName && isContentPage)
                                 li
                                     a(href="/editor/"+ message.postId) Edit this blog
+                                li 
+                                    a(href="javascript:void(0)" data-id=message.postId)#deleteTag Delete this blog
+                                script.
+                                    $('#deleteTag').click((e)=>{
+                                        var confirmation = window.confirm('Do you really want to delete this entry?')
+                                        if(confirmation){
+                                            $.ajax({
+                                                url:'/content/'+$('#deleteTag').data('id'),
+                                                method:"delete",
+                                                statusCode:{
+                                                    404:()=>{
+                                                        alert('Designated entry not found')
+                                                    },
+                                                    403:()=>{
+                                                        alert('Not authorized!')
+                                                    },
+                                                    500:()=>{
+                                                        alert('Internal Error')
+                                                        window.location = "/"
+                                                    },
+                                                    200:()=>{
+                                                        alert('Deleted')
+                                                        window.location = "/"
+                                                    }
+                                                }
+                                            })
+                                        }
+                                    })
+                                
                         li.dropdown
                             a.dropdown-toggle(href="#" data-toggle="dropdown") 
                                 i.fa.fa-fw.fa-user

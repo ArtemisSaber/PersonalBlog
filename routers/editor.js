@@ -2,21 +2,39 @@ const Article = require('../editor/models/article')
 
 function storeArticle(article = new Article(), user, title, content, callback) {
     var now = new Date()
+    var isNew = true
+    if (!article.isNew) {
+        var isNew = false
+    }
     var createTime = now.toUTCString()
-    article.header.createTime = createTime
+    if (isNew) {
+        article.header.createTime = createTime
+    }else{
+        article.header.lastEditTime = createTime
+    }
     var authorName = user.local.userName
     article.header.authorName = authorName
     article.body.title = title
     article.body.content = content
-    article.generateHash(authorName, title, content, res => {
-        article.header.articleId = res
+    if (isNew) {
+        article.generateHash(authorName, title, content, res => {
+            article.header.articleId = res
+            article.save(err => {
+                if (err) {
+                    throw err
+                }
+                callback(article)
+            })
+        })
+    } else {
         article.save(err => {
             if (err) {
                 throw err
+
             }
             callback(article)
         })
-    })
+    }
 }
 var isLoggedIn = function (req, res, next) {
     if (req.isAuthenticated()) {
@@ -64,7 +82,7 @@ module.exports = function (app) {
                     message.postId = article.header.articleId
                     res.render('../views/editor.pug', { user: user, message: message, article: article })
                 }
-            }else{
+            } else {
                 res.render('../views/404.pug')
             }
         })

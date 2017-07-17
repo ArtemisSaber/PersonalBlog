@@ -7,7 +7,8 @@ var articleSchema = mongoose.Schema({
         articleId: String,
         authorName: String,
         category: String,
-        createTime: Date
+        createTime: Date,
+        lastEditTime: Date
     },
     body: {
         title: String,

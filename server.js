@@ -8,6 +8,7 @@ var fs = require('fs')
 var path = require('path')
 var winston = require('winston')
 var less = require('less')
+var favicon = require('serve-favicon')
 
 var bodyParser = require('body-parser')
 var cookieParser = require('cookie-parser')
@@ -31,7 +32,7 @@ app.use(bodyParser.json())
 // app.use(bodyParser())
 
 app.set('view engine', 'pug')
-
+app.use(favicon(path.join(__dirname,'public','icons','favicon.ico')))
 app.use(session(
     {
         secret: 'EnTaroTassadar',

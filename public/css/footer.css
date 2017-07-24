@@ -41,3 +41,8 @@ h1{
   height: 600px;
   overflow: scroll;
 }
+#Alert{
+  margin-top: 5px;
+  height: 30px;
+  padding: 0;
+}

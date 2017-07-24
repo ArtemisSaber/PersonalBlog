@@ -4,25 +4,34 @@ block content
     div.col-md-12.col-xs-12
         if(article)
             - var id = article.header.articleId
-                form(action="/editor/"+id method="post").col-md-8.col-xs-8
-                    div.form-group.col-md-12.col-xs-12
-                        - var title=article.body.title
-                        - var content = article.body.content
-                        input.col-md-12.col-xs-12.form-control(type="text" name="title" value= title required)#title
-                        textarea.col-md-12.com-xs-12.form-control(name="content" style="width:100%;height:55%" required) #{content}
-
-                    div.form-group.col-md-12.col-xs-12
-                        button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Edited by #{user.local.userName}
+            if(article.header.isTemp)
+                - id = 'new'
+            if(article.header.derivedFrom)
+                - id = article.header.derivedFrom
+            p#IDStor #{id}
+            form(action="/editor/"+id method="post").col-md-8.col-xs-8#editorForm
+                div.form-group.col-md-12.col-xs-12
+                    - var title=article.body.title
+                    - var content = article.body.content
+                    input.col-md-12.col-xs-12.form-control(type="text" name="title" value= title required)#title
+                    textarea.col-md-12.col-xs-12.form-control(name="content" style="width:100%;height:55%" required) #{content}
+                div.form-group.col-md-12.col-xs-12
+                    button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Edited by #{user.local.userName}
+                    div.col-md-12.col-xs-12.alert.alert-info#Alert
+                        strong Message:
+                        | Your edit has been saved
         else
-                form(action="/editor/new" method="post").col-md-8.col-xs-8
-                    div.form-group.col-md-12.col-xs-12
-                        input.col-md-12.col-xs-12.form-control(type="text" name="title" placeholder="Title:" required)#title
-                        textarea.col-md-12.com-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
-
-                    div.form-group.col-md-12.col-xs-12
-                        button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Authored by #{user.local.userName}
+            p#IDStor new
+            form(action="/editor/new" method="post").col-md-8.col-xs-8#editorForm
+                div.form-group.col-md-12.col-xs-12
+                    input.col-md-12.col-xs-12.form-control(type="text" name="title" placeholder="Title:" required)#title
+                    textarea.col-md-12.col-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
+                div.form-group.col-md-12.col-xs-12
+                    button.btn.btn-primary.col-xs-12.col-md-12(type="submit") Submit Authored by #{user.local.userName}
+                    div.col-md-12.col-xs-12.alert.alert-info#Alert
+                        strong Message:
+                        | Your edit has been saved
         div.col-md-4.col-xs-4#Preview
-        
     script(src="/scripts/marked.js")
     
     script.
@@ -35,10 +44,24 @@ block content
         $(document).ready(()=>{
             setHeight()
             preview()
+            $('#Alert').hide()
+            $('#IDStor').hide()
+            setInterval(autoSave,60000)
         })
         $('textarea').on('input',(e)=>{
             preview()
         })
+        function autoSave(){
+            $.ajax({
+                url:"/editor/autoSave?derive="+$('#IDStor').text().trim(),
+                type:"POST",
+                data:$('#editorForm').serialize(),
+                success: ()=>{
+                    $('#Alert').show()
+                    setTimeout(()=>{$('#Alert').hide()},5000)
+                }
+            })
+        }
         
             
 

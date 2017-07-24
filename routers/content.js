@@ -6,6 +6,7 @@ const User = require('../auth/models/user')
 var message = {
     userName: String,
     authorName: String,
+    postName:String,
     postId: Number,
 }
 marked.setOptions({
@@ -59,6 +60,7 @@ module.exports = function (app) {
                 var content = article.body.content
                 var parsedContent = marked(content)
                 message.postId = id
+                message.postName = title
                 message.authorName = article.header.authorName
                 var html = {
                     title: title,

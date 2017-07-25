@@ -19,6 +19,16 @@ marked.setOptions({
     smartLists: true,
     smartypants: false
 })
+
+function resetMessage(){
+    message = {
+        userName: undefined,
+        authorName: undefined,
+        postName: undefined,
+        postId: undefined
+    }
+}
+
 function storeComment(article, comment, callback) {
     if (!article) {
         throw new ExceptionInformation('No article defined')
@@ -51,6 +61,7 @@ module.exports = function (app) {
     //content rendering
     app.get('/content/:id', (req, res) => {
         var id = req.params.id
+        resetMessage()
         Article.findOne({ 'header.articleId': id }, (err, article) => {
             if (err) {
                 throw err
@@ -121,6 +132,7 @@ module.exports = function (app) {
     })
     app.get('/usr/:uId', (req, res) => {
         var uId = req.params.uId
+        resetMessage()
         User.findOne({ '_id': uId }, (err, user) => {
             if (err) {
                 throw err

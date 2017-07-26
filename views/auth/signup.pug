@@ -6,13 +6,16 @@ block content
             span(class="fa fa-sign-in") Signup
             - if(message.length >0)
                 div(class="alert alert-danger") #{message}
-        form(action="/auth/signup" method="post")
+        form(action="/auth/signup" method="post")#signUp
             div(class="form-group")
                 label UserName
                 input(type="text" class="form-control" name="userName")
             div(class="form-group")
                 label Password
-                input(type="password" class="form-control" name="pwd")
+                input(type="password" class="form-control" name="pwd")#pwd
+            div(class="form-group")
+                label Repeat Password
+                input(type="password" class="form-control" name="repwd")#repwd
             button(type="submit" class="btn btn-warning btn-lg") Signup
             
         hr
@@ -20,4 +23,22 @@ block content
         p Already have an account?
             a(href="/auth/login") Login
         p Or go to 
-            a(href="/") Home            
+            a(href="/") Home        
+    script.
+        $('#signUp').validate({
+            rules:{
+                pwd:{
+                    required:true,
+                },
+                repwd:{
+                    required:true,
+                    equalTo:"#pwd",
+                }
+            },
+            messages:{
+                pwd:{
+                    required:"Please set a password"
+                }
+            }
+        })
+        

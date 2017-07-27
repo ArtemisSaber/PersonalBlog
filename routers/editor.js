@@ -109,7 +109,9 @@ module.exports = function (app) {
                 authorized = true
                 userOpTime.set(message.userName, nowTime)
             } else {
-                frequentMessage(res)
+                res.writeHead(403)
+                res.write("Too frequent operations")
+                res.end()
             }
         } else {
             userOpTime.set(message.userName, nowTime)
@@ -125,11 +127,7 @@ module.exports = function (app) {
                     res.render('../views/editor.pug', { user: user, message: message, article: null })
                 }
             })
-        } else {
-            frequentMessage(res)
-
         }
-
     })
     //save new post
     app.post('/editor/new', isLoggedIn, (req, res) => {
@@ -144,7 +142,9 @@ module.exports = function (app) {
                 authorized = true
                 userOpTime.set(user.local.userName, nowTime)
             } else {
-                frequentMessage(res)
+                res.writeHead(403)
+                res.write("Too frequent operations")
+                res.end()
 
             }
 
@@ -163,9 +163,6 @@ module.exports = function (app) {
                     }
                 })
             })
-        } else {
-            frequentMessage(res)
-
         }
     })
     //auto save
@@ -176,7 +173,7 @@ module.exports = function (app) {
         var title = req.body.title
         var content = req.body.content
         var derivedFrom = req.query.derive
-        var autoKey = user.local.userName+"/"+derivedFrom
+        var autoKey = user.local.userName + "/" + derivedFrom
         if (derivedFrom === 'new') {
             derivedFrom = undefined
         }
@@ -224,7 +221,9 @@ module.exports = function (app) {
 
             }
         } else {
-            frequentMessage(res)
+            res.writeHead(403)
+            res.write("Too frequent operations")
+            res.end()
         }
     })
     //edit post
@@ -276,7 +275,9 @@ module.exports = function (app) {
                 authorized = true
                 userWriteTime.set(user.local.userName, nowTime)
             } else {
-                frequentMessage(res)
+                res.writeHead(403)
+                res.write("Too frequent operations")
+                res.end()
             }
         } else {
             authorized = true
@@ -305,8 +306,6 @@ module.exports = function (app) {
                     res.redirect('/')
                 }
             })
-        } else {
-            frequentMessage(res)
         }
     })
 

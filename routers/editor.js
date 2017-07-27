@@ -220,10 +220,6 @@ module.exports = function (app) {
                 })
 
             }
-        } else {
-            res.writeHead(403)
-            res.write("Too frequent operations")
-            res.end()
         }
     })
     //edit post

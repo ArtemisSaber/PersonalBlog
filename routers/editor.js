@@ -5,7 +5,7 @@ var formidable = require('formidable')
 var path = require('path')
 var fs = require('fs')
 
-function storeArticle(article = new Article(), user, title, content, callback) {
+function storeArticle(article = new Article(), user, title, isPrivate, content, callback) {
     var now = new Date()
     var isNew = true
     if (!article.isNew) {
@@ -18,6 +18,11 @@ function storeArticle(article = new Article(), user, title, content, callback) {
         article.header.lastEditTime = createTime
     }
     var authorName = user.local.userName
+    if (isPrivate === 'yes') {
+        article.header.isPrivate = true
+    } else {
+        article.header.isPrivate = false
+    }
     article.header.authorName = authorName
     article.body.title = title
     article.body.content = content
@@ -35,7 +40,6 @@ function storeArticle(article = new Article(), user, title, content, callback) {
         article.save(err => {
             if (err) {
                 throw err
-
             }
             callback(article)
         })
@@ -135,6 +139,7 @@ module.exports = function (app) {
         var user = req.user
         var title = req.body.title
         var content = req.body.content
+        var isPrivate = req.body.private
         var authorized = false
         if (userWriteTime.get(user.local.userName)) {
             var lastWriteTime = userWriteTime.get(user.local.userName)
@@ -153,7 +158,7 @@ module.exports = function (app) {
             authorized = true
         }
         if (authorized) {
-            storeArticle(undefined, user, title, content, article => {
+            storeArticle(undefined, user, title, isPrivate, content, article => {
                 var id = article.header.articleId
                 res.redirect('/content/' + id)
                 //delete tempdata after submit
@@ -264,6 +269,7 @@ module.exports = function (app) {
         var user = req.user
         var title = req.body.title
         var content = req.body.content
+        var isPrivate = req.body.private
         var authorized = false
         if (userWriteTime.get(user.local.userName)) {
             var lastWriteTime = userWriteTime.get(user.local.userName)
@@ -286,7 +292,7 @@ module.exports = function (app) {
                 }
                 if (article) {
                     if (user.local.userName === article.header.authorName) {
-                        storeArticle(article, user, title, content, article => {
+                        storeArticle(article, user, title, isPrivate, content, article => {
                             var id = article.header.articleId
                             res.redirect('/content/' + id)
                             tempArticle.deleteOne({ 'header.authorName': user.local.userName, 'header.derivedFrom': id }, (err, res) => {

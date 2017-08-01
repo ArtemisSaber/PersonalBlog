@@ -6,7 +6,7 @@ const User = require('../auth/models/user')
 var message = {
     userName: String,
     authorName: String,
-    postName:String,
+    postName: String,
     postId: Number,
 }
 marked.setOptions({
@@ -20,7 +20,7 @@ marked.setOptions({
     smartypants: false
 })
 
-function resetMessage(){
+function resetMessage() {
     message = {
         userName: undefined,
         authorName: undefined,
@@ -67,48 +67,62 @@ module.exports = function (app) {
                 throw err
             }
             if (article) {
-                var title = article.body.title
-                var content = article.body.content
-                var parsedContent = marked(content)
-                message.postId = id
-                message.postName = title
-                message.authorName = article.header.authorName
-                var html = {
-                    title: title,
-                    contents: parsedContent
-                }
-                var user = req.user
-                if (req.isAuthenticated()) {
-                    message.userName = req.user.local.userName
+                var showFlag = false;
+                if (article.header.isPrivate) {
+                    if (req.isAuthenticated() && req.user.local.userName == article.header.authorName) {
+                        showFlag = true
+                    }
                 } else {
-                    message.userName = null
+                    showFlag = true
                 }
-                var comments = []
-                if (article.comments.length > 0) {
-                    article.comments.forEach((comment) => {
-                        comments.push(comment)
-                    })
+                if (showFlag) {
+                    var title = article.body.title
+                    var content = article.body.content
+                    var parsedContent = marked(content)
+                    message.postId = id
+                    message.postName = title
+                    message.authorName = article.header.authorName
+                    var html = {
+                        title: title,
+                        contents: parsedContent
+                    }
+                    var user = req.user
+                    if (req.isAuthenticated()) {
+                        message.userName = req.user.local.userName
+                    } else {
+                        message.userName = null
+                    }
+                    var comments = []
+                    if (article.comments.length > 0) {
+                        article.comments.forEach((comment) => {
+                            comments.push(comment)
+                        })
+                    }
+                    message.postId = id
+                    res.render('../views/content.pug', { user: user, message: message, html: html, isContentPage: true, comments: comments })
+                } else {
+                    res.writeHead(403)
+                    res.write('Unauthorized')
+                    res.end()
                 }
-                message.postId = id
-                res.render('../views/content.pug', { user: user, message: message, html: html, isContentPage: true, comments: comments })
             } else {
                 res.render('../views/404.pug')
             }
         })
     })
-    app.delete('/content/:id',isLoggedIn,(req,res)=>{
+    app.delete('/content/:id', isLoggedIn, (req, res) => {
         var id = req.params.id
-        Article.findOne({'header.articleId':id},(err,article)=>{
-            if(err){
+        Article.findOne({ 'header.articleId': id }, (err, article) => {
+            if (err) {
                 throw err
             }
-            if(article){
+            if (article) {
                 authorName = article.header.authorName
-                if(req.isAuthenticated()){
+                if (req.isAuthenticated()) {
                     userName = req.user.local.userName
-                    if(userName === authorName){
-                        Article.deleteOne({'header.articleId':id},(err,result)=>{
-                            if(err){
+                    if (userName === authorName) {
+                        Article.deleteOne({ 'header.articleId': id }, (err, result) => {
+                            if (err) {
                                 res.writeHead(500)
                                 res.end()
                                 throw err
@@ -116,15 +130,15 @@ module.exports = function (app) {
                             res.writeHead(200)
                             res.end()
                         })
-                    }else{
+                    } else {
                         res.writeHead(403)
                         res.end()
                     }
-                }else{
+                } else {
                     res.writeHead(403)
                     res.end()
                 }
-            }else{
+            } else {
                 res.writeHead(404)
                 res.end()
             }
@@ -133,13 +147,26 @@ module.exports = function (app) {
     app.get('/usr/:uId', (req, res) => {
         var uId = req.params.uId
         resetMessage()
+        var showAll = false
         User.findOne({ '_id': uId }, (err, user) => {
             if (err) {
                 throw err
             }
             if (user) {
+                if(req.isAuthenticated() && req.user.local.userName == user.local.userName){
+                    showAll = true
+                }
+                var criteria = {
+                    'header.authorName':user.local.userName,
+                    'header.isPrivate':{$in:[null,false]}
+                }
+                if(showAll){
+                    criteria = {
+                        'header.authorName':user.local.userName
+                    }
+                }
                 var curuser = null
-                Article.find({ 'header.authorName': user.local.userName }, (err, articles) => {
+                Article.find(criteria, (err, articles) => {
                     if (err) {
                         throw err
                     }

@@ -32,10 +32,10 @@ app.use(bodyParser.json())
 // app.use(bodyParser())
 
 app.set('view engine', 'pug')
-app.use(favicon(path.join(__dirname,'public','icons','favicon.ico')))
+app.use(favicon(path.join(__dirname, 'public', 'icons', 'favicon.ico')))
 app.use(session(
     {
-        secret: 'EnTaroTassadar',
+        secret: process.env.SECRET || 'EnTaroTassadar',
         resave: true,
         saveUninitialized: true
     }
@@ -58,11 +58,11 @@ fs.readdir('./public/less', (err, files) => {
     }
     files.forEach((file, index) => {
         var curfile = path.join('./public/less', file)
-        fs.readFile(curfile, 'utf-8',(err, data) => {
-            less.render(data,(err,cssdata)=>{
-                var targetPath = path.join('./public/css',file.split('.')[0]+".css")
-                fs.writeFile(targetPath,cssdata.css,err=>{
-                    if(err){
+        fs.readFile(curfile, 'utf-8', (err, data) => {
+            less.render(data, (err, cssdata) => {
+                var targetPath = path.join('./public/css', file.split('.')[0] + ".css")
+                fs.writeFile(targetPath, cssdata.css, err => {
+                    if (err) {
                         console.log(err)
                     }
                 })

@@ -31,9 +31,6 @@ block content
             form(action="/editor/new" method="post").col-md-8.col-xs-8#editorForm
                 div.form-group.col-md-12.col-xs-12
                     input.col-md-8.col-xs-8.form-control(type="text" name="title" placeholder="Title:" required)#title
-                    div.form-group.col-md-4.col-xs-4
-                        input.pull-left(type="checkbox" name="private" value="yes")#private
-                        label Set private
                     textarea.col-md-12.col-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
                 div.form-group.col-md-12.col-xs-12(style="overflow:hidden")
                     button.btn.btn-primary.col-xs-8.col-md-8(type="submit") Submit Authored by #{user.local.userName}

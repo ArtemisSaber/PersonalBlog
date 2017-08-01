@@ -273,7 +273,7 @@ module.exports = function (app) {
         var authorized = false
         if (userWriteTime.get(user.local.userName)) {
             var lastWriteTime = userWriteTime.get(user.local.userName)
-            if (nowTime - lastWriteTime >= 150000) {
+            if (nowTime - lastWriteTime >= 15000) {
                 authorized = true
                 userWriteTime.set(user.local.userName, nowTime)
             } else {

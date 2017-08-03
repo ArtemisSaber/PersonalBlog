@@ -9,38 +9,45 @@ block content
             if(article.header.derivedFrom)
                 - id = article.header.derivedFrom
             p#IDStor #{id}
-            form(action="/editor/"+id method="post").col-md-8.col-xs-8#editorForm
+            form(action="/editor/"+id method="post").col-md-8.col-xs-12#editorForm
                 div.form-group.col-md-12.col-xs-12
                     - var title=article.body.title
                     - var content = article.body.content
                     input.col-md-8.col-xs-8.form-control(type="text" name="title" value= title required)#title
                     textarea.col-md-12.col-xs-12.form-control(name="content" style="width:100%;height:55%" required) #{content}
                 div.form-group.col-md-12.col-xs-12(style="overflow:hidden")
-                    button.btn.btn-primary.col-xs-8.col-md-8(type="submit") Submit Edited by #{user.local.userName}
-                    div.form-group.col-md-4.col-xs-4
+                    button.btn.btn-primary.col-xs-8.col-md-8.desktop-only(type="submit") Submit Edited by #{user.local.userName}
+                    button.btn.btn-primary.col-xs-8.mobile-only(type="submit")#submit Submit
+                    div.form-group.col-md-4.col-xs-4.desktop-only
                         if(article.header.isPrivate)
-                            input.pull-left(type="checkbox" name="private" value="yes" style="vertical-align:middle" checked)#private
+                            input.pull-left.desktop-only(type="checkbox" name="private" value="yes" style="vertical-align:middle" checked)#private
                         else
-                            input.pull-left(type="checkbox" name="private" value="yes" style="vertical-align:middle")#private
-                        label Set private
+                            input.pull-left.desktop-only(type="checkbox" name="private" value="yes" style="vertical-align:middle")#private
+                        label.desktop-only Set private
+                    button.mobile-only.btn.btn-secondary.col-xs-4(type="button" shref="javascript:void(0)")#pvtBtn
+                        span.fa.fa-unlock-alt.center-align &nbsp isPrivate
                 div.col-md-12.col-xs-12.alert.alert-info#Alert(style="margin-top:-5%")
                     strong Message:
                     | Your edit has been saved
         else
             p#IDStor new
-            form(action="/editor/new" method="post").col-md-8.col-xs-8#editorForm
+            form(action="/editor/new" method="post").col-md-8.col-xs-12#editorForm
                 div.form-group.col-md-12.col-xs-12
                     input.col-md-8.col-xs-8.form-control(type="text" name="title" placeholder="Title:" required)#title
                     textarea.col-md-12.col-xs-12.form-control(name="content" placeholder="Content:" style="width:100%;height:55%" required)
                 div.form-group.col-md-12.col-xs-12(style="overflow:hidden")
-                    button.btn.btn-primary.col-xs-8.col-md-8(type="submit") Submit Authored by #{user.local.userName}
-                    div.form-group.col-md-4.col-xs-4
-                        input.pull-left(type="checkbox" name="private" value="yes" style="vertical-align:middle")#private
-                        label Set private
+                    button.btn.btn-primary.col-xs-8.col-md-8.desktop-only(type="submit") Submit Authored by #{user.local.userName}
+                    button.btn.btn-primary.col-xs-8.mobile-only(type="submit")#submit Submit
+                    div.form-group.col-md-4.col-xs-4.desktop-only
+                        input.pull-left.desktop-only(type="checkbox" name="private" value="yes" style="vertical-align:middle")#private
+                        label.desktop-only Set private
+                    button.mobile-only.btn.btn-secondary.col-xs-4(type="button" href="javascript:void(0)")#pvtBtn
+                        span.fa.fa-unlock-alt.center-align &nbsp isPrivate
                 div.col-md-12.col-xs-12.alert.alert-info#Alert(style="margin-top:-5%")
                     strong Message:
                     | Your edit has been saved
-        div.col-md-4.col-xs-4#Preview
+        label.text-center.col-xs-12.mobile-only Preview
+        div.col-md-4.col-xs-12#Preview
     script(src="/scripts/marked.js")
     
     script.
@@ -50,6 +57,18 @@ block content
         }
         function setHeight(){
             $('#Preview').css('height',window.innerHeight*0.65)
+            $('#pvtBtn').css('height',$('#submit').innerHeight())
+            if($('#private').prop('checked')){
+                $('#pvtBtn').toggleClass('btn-secondary btn-success')
+                $('#pvtBtn > span').toggleClass('fa-unlock-alt fa-lock')            
+            }
+        }
+        function setPrivate(){
+            if($('#private').prop('checked')){
+                $('#private').prop('checked',false)
+            }else{
+                $('#private').prop('checked',true)
+            }
         }
         $(document).ready(()=>{
             setHeight()
@@ -58,8 +77,16 @@ block content
             $('#IDStor').hide()
             setInterval(autoSave,60000)
         })
+        $(window).resize(()=>{
+            setHeight();
+        })
         $('textarea').on('input',(e)=>{
             preview()
+        })
+        $('#pvtBtn').click(()=>{
+            setPrivate()
+            $('#pvtBtn').toggleClass('btn-secondary btn-success')
+            $('#pvtBtn > span').toggleClass('fa-unlock-alt fa-lock')            
         })
         function autoSave(){
             $.ajax({

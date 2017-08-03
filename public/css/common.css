@@ -17,6 +17,10 @@ hr {
 h1{
   text-align: center
 }
+.center-align {
+  display: inline-block;
+  vertical-align: middle;
+}
 .contents{
     background-color: #FFF;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -51,8 +55,29 @@ h1{
   .desktop-only{
     display: none
   }
+  #Preview{
+    border: 3px solid lightgray;
+    border-radius: 5px;
+  }
+  #editorForm{
+    padding: 0
+  }
+  #editorForm div{
+    padding: 0
+  }
+  #pvtBtn{
+    display: inline-block;
+    font-stretch: normal;
+  }
+  .btn-secondary{
+    background-color: #CCC;
+    color: #333;
+  }
+  .btn-secondary:hover{
+    color: #333;
+  }
 }
-@media only screen and (min-width:768px){
+@media only screen and (min-width:769px){
   .mobile-only{
     display: none
   }

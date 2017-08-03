@@ -21,7 +21,7 @@ module.exports = function (app, passport) {
             if (err) {
                 throw err
             }
-            userArray.forEach((user)=>{
+            userArray.forEach((user) => {
                 user._id = user._id.valueOf()
             })
             res.render('../views/index.pug', { user: user, message: message, userArray: userArray })

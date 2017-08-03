@@ -2,7 +2,8 @@ extends layout
 block content
     a(href="http://webscan.360.cn/index/checkwebsite/url/www.semimajoraxis.com" name="bfc844c4dc47c97c742a9c3840868a14" style="display:none" ) 360网站安全检测平台
     div.text-center.col-md-12.col-xs-12
-        h1.page-header Users
+        h1.page-header.desktop-only Users
+        h5.page-header.mobile-only Users
         ul.userArrays
         - if(userArray)
             each user in userArray

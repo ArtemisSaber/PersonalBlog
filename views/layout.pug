@@ -1,5 +1,6 @@
 head
     meta(name="baidu-site-verification" content="aUecjYspU0")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     if(message.postName)
         title #{message.postName}
     title Semimajor Axis Blog
@@ -7,7 +8,7 @@ head
         link(rel="stylesheet" href='//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css')
         link(rel="stylesheet" href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
         link(rel="stylesheet" href="/css/nav.css")
-        link(rel="stylesheet" href="/css/footer.css")
+        link(rel="stylesheet" href="/css/common.css")
         script(src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js")
         script(src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js")       
         script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
@@ -115,7 +116,7 @@ body
             
             div.container
                 div.row.contents
-                    div.col-lg-12
+                    div.col-lg-12.col-xs-12.col-md-12
                         block content
 
         //- footer.col-lg-12.col-md-12

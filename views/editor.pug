@@ -46,6 +46,7 @@ block content
     script.
         function preview(){
             document.getElementById('Preview').innerHTML = marked($('textarea').val())
+            $('#Preview').find('img').addClass('img-responsive')
         }
         function setHeight(){
             $('#Preview').css('height',window.innerHeight*0.65)

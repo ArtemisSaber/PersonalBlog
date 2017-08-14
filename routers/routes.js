@@ -138,14 +138,18 @@ function validateHuman(req, res, next) {
         //     "challenge_ts":"sometimestamp",
         //     "hostname":"localhost"
         // }
-        body = {
-            "success": true,
-            "challenge_ts": "2017-08-14T08:39:30Z",
-            "hostname": "www.semimajoraxis.com"
-        }
+        // body = {
+        //     "success": true,
+        //     "challenge_ts": "2017-08-14T08:39:30Z",
+        //     "hostname": "www.semimajoraxis.com"
+        // }
 
         if (!err && response.statusCode === 200) {
-            if (body.success === true) {
+            var resBody = body
+            console.log('~~~~~~~~~~~~~')
+            console.log(resBody)
+            console.log('~~~~~~~~~~~~~')
+            if (resBody.success === true) {
                 return next()
             } else {
                 console.log(response)

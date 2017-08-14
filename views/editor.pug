@@ -56,6 +56,7 @@ block content
             $('#Preview').find('img').addClass('img-responsive')
         }
         function setHeight(){
+            $('textarea').css('height',window.innerHeight*0.55)
             $('#Preview').css('height',window.innerHeight*0.65)
             $('#pvtBtn').css('height',$('#submit').innerHeight())
             if($('#private').prop('checked')){

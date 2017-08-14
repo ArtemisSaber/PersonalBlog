@@ -145,17 +145,13 @@ function validateHuman(req, res, next) {
         // }
 
         if (!err && response.statusCode === 200) {
-            var resBody = body
+            var resBody = JSON.parse(body)
             console.log('~~~~~~~~~~~~~')
             console.log(resBody)
             console.log('~~~~~~~~~~~~~')
             if (resBody.success === true) {
                 return next()
             } else {
-                console.log(response)
-                console.log(body['success'])
-                console.log(body.success)
-                console.log(body)
                 res.redirect('/auth/signup')
             }
         }

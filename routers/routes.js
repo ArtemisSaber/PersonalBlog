@@ -131,15 +131,23 @@ function validateHuman(req, res, next) {
         'secret': env.recaptcha.siteSecret,
         'response': req.body['g-recaptcha-response']
     }
-    request('https://www.google.com/recaptcha/api/siteverify?secret=' + carrierData.secret + '&response=' + carrierData.response, (err, res, body) => {
-        if (!err && res.statusCode === 200) {
-            if (body['success']===true) {
+    request('https://www.google.com/recaptcha/api/siteverify?secret=' + carrierData.secret + '&response=' + carrierData.response, (err, response, body) => {
+        // err= undefined
+        // body = {
+        //     "success":true,
+        //     "challenge_ts":"sometimestamp",
+        //     "hostname":"localhost"
+        // }
+        if (!err && response.statusCode === 200) {
+            if (body.success === true) {
                 return next()
             } else {
                 console.log(body)
+                res.redirect('/auth/signup')
             }
         }
         else {
+            res.redirect('/auth/signup')
             console.log(err)
         }
     })

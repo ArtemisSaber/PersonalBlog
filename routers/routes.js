@@ -152,10 +152,12 @@ function validateHuman(req, res, next) {
             if (resBody.success === true) {
                 return next()
             } else {
+                req.flash('signupMessage', 'Unable to validate your identity')
                 res.redirect('/auth/signup')
             }
         }
         else {
+            req.flash('signupMessage','Identity validation service error')
             res.redirect('/auth/signup')
             console.log(err)
         }

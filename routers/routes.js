@@ -142,7 +142,7 @@ function validateHuman(req, res, next) {
             if (body.success === true) {
                 return next()
             } else {
-                console.log(body)
+                console.log(body.success)
                 res.redirect('/auth/signup')
             }
         }

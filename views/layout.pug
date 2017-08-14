@@ -1,128 +1,130 @@
-head
-    meta(name="baidu-site-verification" content="aUecjYspU0")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    if(message.postName)
-        title #{message.postName}
-    title Semimajor Axis Blog
-    block ref
-        link(rel="stylesheet" href='//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css')
-        link(rel="stylesheet" href='//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css')
-        link(rel="stylesheet" href="/css/nav.css")
-        link(rel="stylesheet" href="/css/common.css")
-        script(src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js")
-        script(src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js")       
-        script(src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js")
-        script(async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
-        script.
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-4292712210055119",
-                enable_page_level_ads: true
-            });
-        script.
-            $(document).ready(function () {
-                var trigger = $('.hamburger'),
-                    overlay = $('.overlay'),
-                    isClosed = false;
-
-                    trigger.click(function () {
-                        hamburger_cross();      
-                    });
-                    overlay.click(()=>{
-                        hamburger_cross();
-                    })
-
-                function hamburger_cross() {
-
-                    if (isClosed == true) {          
-                        overlay.hide();
-                        trigger.removeClass('is-open');
-                        trigger.addClass('is-closed');
+<!DOCTYPE html>
+html(lang = 'zh en')
+    head
+        meta(name="baidu-site-verification" content="aUecjYspU0")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        if(message.postName)
+            title #{message.postName}
+        title Semimajor Axis Blog
+        block ref
+            link(rel="stylesheet" href='/css/bootstrap.min.css')
+            link(rel="stylesheet" href='/css/font-awesome.min.css')
+            link(rel="stylesheet" href="/css/nav.css")
+            link(rel="stylesheet" href="/css/common.css")
+            script(src="https://cdn.jsdelivr.net/jquery/3.2.1/jquery.min.js")
+            script(src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js")       
+            script(src="/scripts/bootstrap.min.js")
+            script(async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js")
+            script.
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-4292712210055119",
+                    enable_page_level_ads: true
+                });
+            script.
+                $(document).ready(function () {
+                    var trigger = $('.hamburger'),
+                        overlay = $('.overlay'),
                         isClosed = false;
-                    } else {   
-                        overlay.show();
-                        trigger.removeClass('is-closed');
-                        trigger.addClass('is-open');
-                        isClosed = true;
+
+                        trigger.click(function () {
+                            hamburger_cross();      
+                        });
+                        overlay.click(()=>{
+                            hamburger_cross();
+                        })
+
+                    function hamburger_cross() {
+
+                        if (isClosed == true) {          
+                            overlay.hide();
+                            trigger.removeClass('is-open');
+                            trigger.addClass('is-closed');
+                            isClosed = false;
+                        } else {   
+                            overlay.show();
+                            trigger.removeClass('is-closed');
+                            trigger.addClass('is-open');
+                            isClosed = true;
+                        }
                     }
-                }
-                $('[data-toggle="offcanvas"]').click(function () {
-                    $('#wrapper').toggleClass('toggled');
-                });  
-            });
+                    $('[data-toggle="offcanvas"]').click(function () {
+                        $('#wrapper').toggleClass('toggled');
+                    });  
+                });
                
-        meta(charset="utf-8")
-body
-    block nav
-        div(id="wrapper")
-            div.overlay(data-toggle="offcanvas")
-            nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation" id="sidebar-wrapper")
-                ul.nav.sidebar-nav
-                    li.sidebar-brand
-                        a(href="/") Semimajor Axis
-                    unless(user) 
+            meta(charset="utf-8")
+    body
+        block nav
+            div(id="wrapper")
+                div.overlay(data-toggle="offcanvas")
+                nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation" id="sidebar-wrapper")
+                    ul.nav.sidebar-nav
+                        li.sidebar-brand
+                            a(href="/") Semimajor Axis
+                        unless(user) 
+                            li
+                                a(href="/auth/login") Login
+                            li 
+                                a(href="/auth/signup") Signup
                         li
-                            a(href="/auth/login") Login
-                        li 
-                            a(href="/auth/signup") Signup
-                    li
-                        a(href="/") Home
-                    if(user)
-                        - var userName = user.local.userName
-                        li
-                            a(href="/editor/new") Post new blog
-                        if(message.authorName)
-                            if(user.local.userName === message.authorName && isContentPage)
-                                li
-                                    a(href="/editor/"+ message.postId) Edit this blog
-                                li 
-                                    a(href="javascript:void(0)" data-id=message.postId)#deleteTag Delete this blog
-                                script.
-                                    $('#deleteTag').click((e)=>{
-                                        var confirmation = window.confirm('Do you really want to delete this entry?')
-                                        if(confirmation){
-                                            $.ajax({
-                                                url:'/content/'+$('#deleteTag').data('id'),
-                                                method:"delete",
-                                                statusCode:{
-                                                    404:()=>{
-                                                        alert('Designated entry not found')
-                                                    },
-                                                    403:()=>{
-                                                        alert('Not authorized!')
-                                                    },
-                                                    500:()=>{
-                                                        alert('Internal Error')
-                                                        window.location = "/"
-                                                    },
-                                                    200:()=>{
-                                                        alert('Deleted')
-                                                        window.location = "/"
+                            a(href="/") Home
+                        if(user)
+                            - var userName = user.local.userName
+                            li
+                                a(href="/editor/new") Post new blog
+                            if(message.authorName)
+                                if(user.local.userName === message.authorName && isContentPage)
+                                    li
+                                        a(href="/editor/"+ message.postId) Edit this blog
+                                    li 
+                                        a(href="javascript:void(0)" data-id=message.postId)#deleteTag Delete this blog
+                                    script.
+                                        $('#deleteTag').click((e)=>{
+                                            var confirmation = window.confirm('Do you really want to delete this entry?')
+                                            if(confirmation){
+                                                $.ajax({
+                                                    url:'/content/'+$('#deleteTag').data('id'),
+                                                    method:"delete",
+                                                    statusCode:{
+                                                        404:()=>{
+                                                            alert('Designated entry not found')
+                                                        },
+                                                        403:()=>{
+                                                            alert('Not authorized!')
+                                                        },
+                                                        500:()=>{
+                                                            alert('Internal Error')
+                                                            window.location = "/"
+                                                        },
+                                                        200:()=>{
+                                                            alert('Deleted')
+                                                            window.location = "/"
+                                                        }
                                                     }
-                                                }
-                                            })
-                                        }
-                                    })
+                                                })
+                                            }
+                                        })
                                 
-                        li.dropdown
-                            a.dropdown-toggle(href="#" data-toggle="dropdown") 
-                                i.fa.fa-fw.fa-user
-                                |#{userName}
-                                span.caret
-                            ul.dropdown-menu(role="menu")
-                                li.dropdown-header User Management
-                                li
-                                    a(href="/auth/logout") Logout
-        div(id="page-content-wrapper")
-            button.hamburger.is-closed.animated.fadeInLeft(type="button" data-toggle="offcanvas")
-                span.hamb-top
-                span.hamb-middle
-                span.hamb-bottom
+                            li.dropdown
+                                a.dropdown-toggle(href="#" data-toggle="dropdown") 
+                                    i.fa.fa-fw.fa-user
+                                    |#{userName}
+                                    span.caret
+                                ul.dropdown-menu(role="menu")
+                                    li.dropdown-header User Management
+                                    li
+                                        a(href="/auth/logout") Logout
+            div(id="page-content-wrapper")
+                button.hamburger.is-closed.animated.fadeInLeft(type="button" data-toggle="offcanvas")
+                    span.hamb-top
+                    span.hamb-middle
+                    span.hamb-bottom
                 
             
-            div.container
-                div.row.contents
-                    div.col-lg-12.col-xs-12.col-md-12
-                        block content
+                div.container
+                    div.row.contents
+                        div.col-lg-12.col-xs-12.col-md-12
+                            block content
 
         //- footer.col-lg-12.col-md-12
         //-     div

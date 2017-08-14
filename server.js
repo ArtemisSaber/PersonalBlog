@@ -47,6 +47,7 @@ app.use(flash())
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')))
 app.use('/scripts', express.static(path.join(__dirname, 'public', 'scripts')))
 app.use('/images', express.static(path.join(__dirname, 'public', 'image')))
+app.use('/fonts',express.static(path.join(__dirname,'public','fonts')))
 
 require('./routers/routes')(app, passport)
 require('./routers/editor')(app)

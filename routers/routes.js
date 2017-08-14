@@ -133,7 +133,7 @@ function validateHuman(req, res, next) {
     }
     request('https://www.google.com/recaptcha/api/siteverify?secret=' + carrierData.secret + '&response=' + carrierData.response, (err, res, body) => {
         if (!err && res.statusCode === 200) {
-            if (body.success) {
+            if (body['success']===true) {
                 return next()
             } else {
                 console.log(body)

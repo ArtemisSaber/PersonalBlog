@@ -1,5 +1,15 @@
 const pug = require('pug')
 const User = require('../auth/models/user')
+const request = require('request')
+var env = require('../env')
+if (!env) {
+    env = {
+        'recaptcha': {
+            'siteKey': 'your site key',
+            'siteSecret': 'your site secret'
+        }
+    }
+}
 
 module.exports = function (app, passport) {
     var message = {
@@ -63,7 +73,7 @@ module.exports = function (app, passport) {
         res.render('../views/auth/signup.pug', { message: req.flash('signupMessage') })
     })
 
-    app.post('/auth/signup', passport.authenticate('local-signup', {
+    app.post('/auth/signup', validateHuman, passport.authenticate('local-signup', {
         successRedirect: '/',
         failureRedirect: '/auth/signup',
         failureFlash: true
@@ -114,4 +124,23 @@ var isLoggedIn = function (req, res, next) {
         return next()
     }
     res.redirect('/auth/login')
-} 
+}
+
+function validateHuman(req, res, next) {
+    var carrierData = {
+        'secret': env.recaptcha.siteSecret,
+        'response': req.body['g-recaptcha-response']
+    }
+    request('https://www.google.com/recaptcha/api/siteverify?secret=' + carrierData.secret + '&response=' + carrierData.response, (err, res, body) => {
+        if (!err && res.statusCode === 200) {
+            if (body.success) {
+                return next()
+            } else {
+                console.log(body)
+            }
+        }
+        else {
+            console.log(err)
+        }
+    })
+}

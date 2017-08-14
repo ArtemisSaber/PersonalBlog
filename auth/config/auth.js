@@ -3,15 +3,25 @@ var LocalStrategy = passport_local.Strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 var GithubStrategy = require('passport-github').Strategy
 var User = require('../models/user')
+var request = require('request')
 var Auth = require('./authinfo')
 var winston = require('winston')
 if (!Auth) {
     Auth = require('./user')
 }
-winston.add(winston.transports.File,{filename:'../../logs/site.log'})
+var env = require('../../env')
+if (!env) {
+    env = {
+        'recaptcha': {
+            'siteKey': 'your site key',
+            'siteSecret': 'your site secret'
+        }
+    }
+}
+winston.add(winston.transports.File, { filename: '../../logs/site.log' })
 
 //save user entity
-function storeUser(user = new User(),userName, pwd, callback) {
+function storeUser(user = new User(), userName, pwd, callback) {
     user.local.userName = userName
     user.local.privilege = 0
     user.generateHash(pwd, res => {
@@ -21,7 +31,7 @@ function storeUser(user = new User(),userName, pwd, callback) {
                 throw err
             }
             var now = Date()
-            winston.log('register',now.toString()+': registered'+userName)
+            winston.log('register', now.toString() + ': registered' + userName)
             callback(err, user)
         })
     })
@@ -52,6 +62,26 @@ function storeGithubUser(user = new User(), profile, token, callback) {
             throw err
         }
         callback(err, user)
+    })
+}
+
+function validateHuman(req, res, next) {
+    var carrierData = {
+        'secret':env.recaptcha.siteSecret,
+        'response':req.body.g-recaptcha-response
+    }
+    request('https://www.google.com/recaptcha/api/siteverify?secret='+carrierData.secret+'&response='+carrierData.response,(err,res,body)=>{
+        if(!err && res.statusCode == 200){
+            console.log(body)
+            if(body.success){
+                return next()
+            }else{
+                res.redirect('/')
+            }
+        }
+        else{
+            res.redirect('/')
+        }
     })
 }
 

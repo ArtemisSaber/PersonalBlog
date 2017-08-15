@@ -12,13 +12,14 @@ block content
                 each comment in comments
                     div.col-md-12.col-xs-12.comment
                         div
-                           = comment.content       
-            div.col-md-12.col-xs-12.add
-                form(action="/comment/"+message.postId method="post")
-                    div.input-group
-                        input.form-control(type="text" placeholder="Comment:" name="comment" required)
-                        span.input-group-btn
-                            button.btn.btn-primary(type="submit") Submit
+                           = comment.content
+            if(user)       
+                div.col-md-12.col-xs-12.add
+                    form(action="/comment/"+message.postId method="post")
+                        div.input-group
+                            input.form-control(type="text" placeholder="Comment:" name="comment" required)
+                            span.input-group-btn
+                                button.btn.btn-primary(type="submit") Submit
     script.
         $(document).ready(()=>{
             $('#Contents').find('img').addClass('img-responsive')

@@ -2,6 +2,7 @@
 const marked = require('marked')
 const Article = require('../editor/models/article')
 const User = require('../auth/models/user')
+var humanValidation = require('./humanValidation')
 
 var message = {
     userName: String,
@@ -29,7 +30,7 @@ function resetMessage() {
     }
 }
 
-function storeComment(article, comment, callback) {
+function storeComment(article, user,comment, callback) {
     if (!article) {
         throw new ExceptionInformation('No article defined')
     }
@@ -37,7 +38,7 @@ function storeComment(article, comment, callback) {
     var createTime = now.toUTCString()
     var addModel = {
         time: createTime,
-        author: 'Anonmynous',
+        author: user.local.userName,
         content: comment
     }
     article.comments.push(addModel)
@@ -153,16 +154,16 @@ module.exports = function (app) {
                 throw err
             }
             if (user) {
-                if(req.isAuthenticated() && req.user.local.userName == user.local.userName){
+                if (req.isAuthenticated() && req.user.local.userName == user.local.userName) {
                     showAll = true
                 }
                 var criteria = {
-                    'header.authorName':user.local.userName,
-                    'header.isPrivate':{$in:[null,false]}
+                    'header.authorName': user.local.userName,
+                    'header.isPrivate': { $in: [null, false] }
                 }
-                if(showAll){
+                if (showAll) {
                     criteria = {
-                        'header.authorName':user.local.userName
+                        'header.authorName': user.local.userName
                     }
                 }
                 var curuser = null
@@ -200,22 +201,25 @@ module.exports = function (app) {
         })
     })
     //comment posting
-    app.post('/comment/:id', (req, res) => {
-        var articleId = req.params.id
-        var comment = req.body.comment
-        if (comment) {
-            Article.findOne({ 'header.articleId': articleId }, (err, article) => {
-                if (err) {
-                    throw err
-                }
-                if (article) {
-                    storeComment(article, comment, (article) => {
-                        res.redirect('/content/' + articleId)
-                    })
-                } else {
-                    res.render('../views/404.pug')
-                }
-            })
+    app.post('/comment/:id', isLoggedIn, (req, res) => {
+        if (req.user) {
+            var articleId = req.params.id
+            var comment = req.body.comment
+            if (comment) {
+                Article.findOne({ 'header.articleId': articleId }, (err, article) => {
+                    if (err) {
+                        throw err
+                    }
+                    if (article) {
+                        storeComment(article, req.user,comment, (article) => {
+                            res.redirect('/content/' + articleId)
+                        })
+                    } else {
+                        res.render('../views/404.pug')
+                    }
+                })
+            }
+
         }
     })
 }

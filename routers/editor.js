@@ -1,6 +1,6 @@
 const Article = require('../editor/models/article')
 const tempArticle = require('../editor/models/tempArticle')
-
+var humanValidation = require('./humanValidation')
 var formidable = require('formidable')
 var path = require('path')
 var fs = require('fs')
@@ -125,16 +125,16 @@ module.exports = function (app) {
             tempArticle.findOne({ 'header.authorName': user.local.userName, 'header.derivedFrom': null }, (err, tempArticles) => {
                 if (tempArticles) {
                     message.hasTemp = true
-                    res.render('../views/editor.pug', { user: user, message: message, article: tempArticles })
+                    res.render('../views/editor.pug', { user: user, message: message, article: tempArticles, validate: req.flash('validateMessage') })
                 } else {
                     message.hasTemp = false
-                    res.render('../views/editor.pug', { user: user, message: message, article: null })
+                    res.render('../views/editor.pug', { user: user, message: message, article: null, validate: req.flash('validateMessage') })
                 }
             })
         }
     })
     //save new post
-    app.post('/editor/new', isLoggedIn, (req, res) => {
+    app.post('/editor/new', humanValidation, isLoggedIn, (req, res) => {
         var nowTime = new Date()
         var user = req.user
         var title = req.body.title
@@ -238,7 +238,7 @@ module.exports = function (app) {
             if (tempArticles) {
                 message.authorName = tempArticles.header.authorName
                 message.postId = tempArticles.header.derivedFrom
-                res.render('../views/editor.pug', { user: user, message: message, article: tempArticles })
+                res.render('../views/editor.pug', { user: user, message: message, article: tempArticles, validate: req.flash('validateMessage') })
             } else {
                 Article.findOne({ 'header.articleId': articleIdParam }, (err, article) => {
                     if (err) {
@@ -263,7 +263,7 @@ module.exports = function (app) {
         })
     })
     //save edit
-    app.post('/editor/:articleId', isLoggedIn, (req, res) => {
+    app.post('/editor/:articleId', humanValidation, isLoggedIn, (req, res) => {
         var nowTime = new Date()
         var articleIdParam = req.params.articleId
         var user = req.user

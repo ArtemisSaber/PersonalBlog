@@ -1,15 +1,8 @@
 const pug = require('pug')
 const User = require('../auth/models/user')
 const request = require('request')
-var env = require('../env')
-if (!env) {
-    env = {
-        'recaptcha': {
-            'siteKey': 'your site key',
-            'siteSecret': 'your site secret'
-        }
-    }
-}
+
+var humanValidation = require('./humanValidation')
 
 module.exports = function (app, passport) {
     var message = {
@@ -70,10 +63,10 @@ module.exports = function (app, passport) {
 
     //local signup
     app.get('/auth/signup', (req, res) => {
-        res.render('../views/auth/signup.pug', { message: req.flash('signupMessage') })
+        res.render('../views/auth/signup.pug', { message: req.flash('signupMessage') ,validate:req.flash('validateMessage') })
     })
 
-    app.post('/auth/signup', validateHuman, passport.authenticate('local-signup', {
+    app.post('/auth/signup', humanValidation, passport.authenticate('local-signup', {
         successRedirect: '/',
         failureRedirect: '/auth/signup',
         failureFlash: true
@@ -124,42 +117,4 @@ var isLoggedIn = function (req, res, next) {
         return next()
     }
     res.redirect('/auth/login')
-}
-
-function validateHuman(req, res, next) {
-    var carrierData = {
-        'secret': env.recaptcha.siteSecret,
-        'response': req.body['g-recaptcha-response']
-    }
-    request('https://www.google.com/recaptcha/api/siteverify?secret=' + carrierData.secret + '&response=' + carrierData.response, (err, response, body) => {
-        // err= undefined
-        // body = {
-        //     "success":true,
-        //     "challenge_ts":"sometimestamp",
-        //     "hostname":"localhost"
-        // }
-        // body = {
-        //     "success": true,
-        //     "challenge_ts": "2017-08-14T08:39:30Z",
-        //     "hostname": "www.semimajoraxis.com"
-        // }
-
-        if (!err && response.statusCode === 200) {
-            var resBody = JSON.parse(body)
-            console.log('~~~~~~~~~~~~~')
-            console.log(resBody)
-            console.log('~~~~~~~~~~~~~')
-            if (resBody.success === true) {
-                return next()
-            } else {
-                req.flash('signupMessage', 'Unable to validate your identity')
-                res.redirect('/auth/signup')
-            }
-        }
-        else {
-            req.flash('signupMessage','Identity validation service error')
-            res.redirect('/auth/signup')
-            console.log(err)
-        }
-    })
 }

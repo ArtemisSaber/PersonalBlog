@@ -7,7 +7,7 @@ var humanValidation = require('./humanValidation')
 module.exports = function (app, passport) {
     var message = {
         userName: String,
-        authorrName: String,
+        authorName: String,
         postId: Number,
     }
 

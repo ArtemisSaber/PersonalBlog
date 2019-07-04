@@ -18,10 +18,11 @@ services:
     container_name: letsencrypt-nginx-proxy
     image: 'jrcs/letsencrypt-nginx-proxy-companion'
     volumes:
-      - '/path/to/certs:/etc/nginx/certs:rw'
+      - 'certs:/etc/nginx/certs:rw'
       - '/var/run/docker.sock:/var/run/docker.sock:ro'
     volumes_from:
       - nginx-proxy
+    network_mode: bridge
 
   mongodb:
     image: mongo
